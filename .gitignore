@@ -1,0 +1,7 @@
+/build/
+/build-*/
+/.tools/
+/dist/
+/simulation_tests.exe
+/host-dispatcher-windows-portable.zip
+*.log
