@@ -29,6 +29,14 @@ The engine is written in standard C++17 and is separate from the Qt 6 Widgets in
 
 Requirements: CMake 3.21+, a C++17 compiler, and Qt 6 Widgets 6.2+ for the desktop UI. If Qt is unavailable, CMake still builds the simulation core and tests and reports that it skipped the GUI.
 
+After cloning, install those prerequisites, open a terminal in the repository, and run this single command to configure, build, and launch the GUI. On Windows, it also deploys the Qt and compiler runtime files beside the app before launching:
+
+```sh
+cmake -P scripts/run.cmake
+```
+
+The script works with single- and multi-configuration CMake generators. On Windows it requires Qt's `windeployqt` deployment tool. If Qt is installed in a nonstandard location, set `CMAKE_PREFIX_PATH` to its Qt installation before running the command.
+
 ```sh
 cmake -S . -B build
 cmake --build build

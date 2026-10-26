@@ -49,6 +49,7 @@ There is no database, network service, persistence layer, third-party runtime li
 | Path | Responsibility |
 |---|---|
 | `CMakeLists.txt` | C++ standard, core library, optional Qt GUI target, and CTest target. |
+| `scripts/run.cmake` | Cross-platform single-command configure/build/launch helper; deploys Qt runtime dependencies on Windows. |
 | `src/simulation.h` | Core domain types and public engine API. |
 | `src/simulation.cpp` | Validation, state transitions, schedulers, simulated resources, tick engine, and metrics. |
 | `src/main.cpp` | Creates the Qt application and main window, then starts the event loop. |
@@ -382,6 +383,8 @@ When CMake cannot find Qt, set `CMAKE_PREFIX_PATH` to the Qt installation for th
 ### Windows portable package
 
 The committed portable bundle is `release/host-dispatcher-windows-portable.zip`. Extract the entire ZIP and run `host-dispatcher.exe` from the extracted folder. Keep the Qt DLLs, MinGW runtime DLLs, and plugin directories beside the executable. The EXE by itself is not a self-contained single-file program. `windeployqt --release --no-translations --compiler-runtime` is the Qt deployment step used to assemble those dependencies.
+
+For a source checkout, `cmake -P scripts/run.cmake` configures the build, builds the GUI target, deploys the Qt runtime on Windows, and launches the application. It requires CMake 3.21+, a C++17 compiler, Qt 6 Widgets 6.2+, and Windows Qt deployment tools on Windows. Set `CMAKE_PREFIX_PATH` first if CMake cannot discover Qt automatically.
 
 ## 13. Tests and evidence
 
