@@ -14,13 +14,24 @@ allocate physical RAM, or operate real hardware devices.
 
 ## Start here
 
-1.  Read `RULES.md` and `TECH_STACK.md`.
-2.  Read `ARCHITECTURE.md` and `WORKFLOW.md`.
-3.  Follow `CODEX_PHASE_PROMPTS.md` in order. Give Codex one phase at a
+1.  Read `PROJECT_REFERENCE.md` for the complete overview, design, stack,
+    API reference, function inventory, build instructions, and limitations.
+2.  Read `RULES.md` and `TECH_STACK.md` for the original project constraints.
+3.  Read `ARCHITECTURE.md` and `WORKFLOW.md` for design and development process.
+4.  Follow `CODEX_PHASE_PROMPTS.md` in order. Give Codex one phase at a
     time.
-4.  Use `TESTING.md` to verify each phase.
-5.  Use `USER_GUIDE.md` to run and demonstrate the completed
+5.  Use `TESTING.md` to verify each phase.
+6.  Use `USER_GUIDE.md` to run and demonstrate the completed
     application.
+
+## Document map
+
+- `PROJECT_REFERENCE.md` — consolidated project and API reference.
+- `ARCHITECTURE.md` — scheduling, state, time, and resource design.
+- `USER_GUIDE.md` — how to operate the application.
+- `TESTING.md` — automated checks and manual acceptance checklist.
+- `TECH_STACK.md` — original technology requirements.
+- `WORKFLOW.md` — development workflow and project status.
 
 ## Recommended implementation
 

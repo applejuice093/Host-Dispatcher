@@ -13,6 +13,18 @@ An educational C++17 and Qt 6 Widgets application for simulating OS dispatching.
 
 The first version supports one CPU and one configured I/O request per process. It does not include persistence, report export, or multiple CPUs.
 
+## Project explanation
+
+HOST Dispatcher is a teaching tool for seeing how an operating system could choose which process gets the CPU while keeping track of memory and I/O. It runs a model of these resources inside the application; it does not change the priority of real programs, use physical RAM as simulated memory, or operate actual devices.
+
+Each process is configured with a type, arrival time, CPU work, and memory request. A Real-Time process also has a deadline and is scheduled using Earliest Deadline First (EDF). User processes use a three-level Multilevel Feedback Queue (MLFQ): short CPU bursts begin in the highest-priority queue, and longer-running work moves to lower queues when it uses its time quantum. Ready Real-Time work takes precedence over User work.
+
+When a process arrives, the simulator admits it only if enough simulated memory is available. A process can issue one optional I/O request after using part of its CPU burst. It then blocks while its named device serves the request; each device handles one request at a time and keeps additional requests in FIFO order. The process returns to the ready state when service completes. Users can also suspend, resume, or terminate processes. Completion and termination release simulated memory, and termination removes outstanding simulated I/O.
+
+The simulation advances in discrete ticks. One **Step** advances one tick; **Play** repeatedly advances ticks using a GUI timer. At every tick the engine handles arrivals and I/O, chooses work with EDF/MLFQ, updates process state and resources, and records the CPU timeline. The dashboard derives metrics from those records and shows states, queues, resources, and deadline misses so the scheduling decisions can be inspected.
+
+The engine is written in standard C++17 and is separate from the Qt 6 Widgets interface. This keeps scheduling and resource rules usable and testable without launching the desktop UI. See [Docs/PROJECT_REFERENCE.md](Docs/PROJECT_REFERENCE.md) for the full architecture, function/API reference, algorithm details, testing notes, and likely presentation questions.
+
 ## Build
 
 Requirements: CMake 3.21+, a C++17 compiler, and Qt 6 Widgets 6.2+ for the desktop UI. If Qt is unavailable, CMake still builds the simulation core and tests and reports that it skipped the GUI.
@@ -39,4 +51,4 @@ Download and extract [the Windows portable bundle](release/host-dispatcher-windo
 
 ## Documentation
 
-See [Docs/README.md](Docs/README.md) for the project documentation map, [Docs/ARCHITECTURE.md](Docs/ARCHITECTURE.md) for scheduling and timing rules, and [Docs/USER_GUIDE.md](Docs/USER_GUIDE.md) for the demonstration flow.
+Start with the complete [project reference](Docs/PROJECT_REFERENCE.md), which covers the architecture, algorithms, every project-defined API/function, technology choices, build/package steps, and limitations. See [Docs/README.md](Docs/README.md) for the documentation map, [Docs/ARCHITECTURE.md](Docs/ARCHITECTURE.md) for scheduling and timing rules, and [Docs/USER_GUIDE.md](Docs/USER_GUIDE.md) for the demonstration flow.
