@@ -162,6 +162,13 @@ try {
         if (message.find("admission waiting") != std::string::npos) ++admissionMessages;
     check(admissionMessages == 2, "each waiting process logs its admission wait once, even when several wait");
 
+    Simulation oversized(32);
+    ProcessSpec tooBig = task(1, ProcessType::User, 2); tooBig.memoryMb = 64; oversized.addProcess(tooBig);
+    oversized.run(2);
+    check(oversized.processes().at(1).state == ProcessState::New && !oversized.messages().empty() &&
+          oversized.messages().front().find("can never be admitted") != std::string::npos,
+          "a request larger than total capacity is reported as never admittable");
+
     Simulation cleanup;
     ProcessSpec blocked = task(1, ProcessType::User, 4);
     blocked.hasIo = true; blocked.io = IoRequest{"Disk", 1, 10}; cleanup.addProcess(blocked);
