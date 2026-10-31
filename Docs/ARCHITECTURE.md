@@ -18,7 +18,7 @@ The scheduling and resource code in `src/simulation.*` has no Qt dependency. `Ma
 
 ## Process model and validation
 
-Each process has a unique positive ID, name, type, state, arrival tick, CPU burst and remaining CPU, memory request, and scheduling/accounting fields. A real-time process stores a positive relative deadline; its absolute deadline is `arrival + relativeDeadline`. Optional one-shot I/O configuration specifies a simulated device, CPU offset, and service duration. Input is validated before registry insertion. New processes are admitted when their arrival tick is reached; memory allocation is atomic. A process that does not fit stays New and admission is retried after resources are released.
+Each process has a unique positive ID, name, type, state, arrival tick, CPU burst and remaining CPU, memory request, and scheduling/accounting fields. A real-time process stores a positive relative deadline; its absolute deadline is `arrival + relativeDeadline`. Optional one-shot I/O configuration specifies a simulated device, CPU offset, and service duration. Input is validated before registry insertion. New processes are admitted when their arrival tick is reached; memory allocation is atomic. A process that does not fit stays New and admission is retried after resources are released. The event log records one admission-wait message per process rather than one per tick, and a request larger than the total simulated capacity is reported as one that can never be admitted.
 
 Legal process state transitions are enforced in the simulation layer. Suspended processes are not schedulable. If I/O completes while a process is SuspendedBlocked, it becomes SuspendedReady; resuming it makes it Ready.
 

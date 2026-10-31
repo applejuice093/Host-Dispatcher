@@ -2,7 +2,7 @@
 
 ## Automated core checks
 
-The dependency-light `simulation_tests` executable covers process creation and validation, duplicate IDs, EDF ordering and ties, real-time preemption, Q0/Q1 demotion, priority boosts and queue uniqueness, memory allocation and release, insufficient-memory retry, I/O blocking/queue service/suspended completion, termination cleanup, deadlines and miss rate, metric formulas, empty metrics, and reset.
+The dependency-light `simulation_tests` executable covers process creation and validation, duplicate IDs, EDF ordering and ties, real-time preemption, Q0/Q1 demotion, priority boosts and queue uniqueness, memory allocation and release, insufficient-memory retry, I/O blocking/queue service/suspended completion, termination cleanup, deadlines and miss rate, metric formulas, empty metrics, and reset. It also checks one admission-wait log entry per process, the never-admittable message, blank I/O device names, suspending and resuming a running task, the Q2 floor, I/O queue hand-off after removal, the EDF arrival tie-break, negative tick counts, terminating a task before it arrives, and the priority boost interval getter and its validation.
 
 Build and run from the repository root:
 
@@ -11,6 +11,8 @@ cmake -S . -B build
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
+
+Without Qt, `cmake --preset core && cmake --build --preset core && ctest --preset core` builds and runs only the engine checks.
 
 Qt 6 Widgets 6.2+ enables the desktop target. Without Qt, CMake warns and builds the core and tests only. GUI smoke launch can use the `offscreen` Qt platform plugin; interactive visual checks should be performed on a desktop session.
 

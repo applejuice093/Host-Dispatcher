@@ -153,6 +153,8 @@ Default capacity is 1024 MB. The UI permits changing it only before adding any p
 
 Admission scans the ordered process registry, which is keyed by ID. Therefore, when multiple due processes contend for scarce memory on the same tick, the lower-ID process is considered first.
 
+Each waiting process adds a single event-log entry the first time admission fails. If its request is larger than the whole capacity, that entry says it can never be admitted, because capacity cannot change once processes exist.
+
 ### Simulated I/O
 
 Each device name has at most one active request and a FIFO queue of waiting requests. Service and due times use the simulated clock. A process has at most one configured request in this version; duplicate outstanding requests for the same process are rejected. I/O starts after the process has consumed its configured CPU offset, then it blocks. Completion wakes a Blocked task or records completion for a SuspendedBlocked task. Terminating a process removes its active or waiting request; if it was active, the next queued request starts at the current simulated tick.
