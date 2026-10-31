@@ -5,3 +5,11 @@
 /simulation_tests.exe
 /host-dispatcher-windows-portable.zip
 *.log
+
+# Editor and tooling files
+/.vscode/
+/.idea/
+/.vs/
+/CMakeUserPresets.json
+/compile_commands.json
+/out/
