@@ -43,6 +43,14 @@ try {
     } catch (const std::invalid_argument&) { invalid = true; }
     check(invalid, "absolute deadline overflow rejected");
 
+    invalid = false;
+    try {
+        ProcessSpec blankDevice = task(4, ProcessType::User, 3);
+        blankDevice.hasIo = true; blankDevice.io = IoRequest{"   ", 1, 1};
+        registry.add(blankDevice);
+    } catch (const std::invalid_argument&) { invalid = true; }
+    check(invalid, "whitespace-only I/O device name rejected");
+
     MemoryManager memory(100);
     check(memory.allocate(1, 60) && memory.used() == 60 && memory.free() == 40, "memory allocation accounting");
     check(!memory.allocate(2, 50) && memory.used() == 60, "insufficient memory is atomic");

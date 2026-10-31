@@ -69,7 +69,7 @@ void ProcessRegistry::add(const ProcessSpec& spec)
     if (spec.type == ProcessType::User && spec.hasDeadline)
         throw std::invalid_argument("Only real-time tasks may have a deadline.");
     if (spec.hasIo) {
-        if (spec.io.device.empty() || spec.io.duration <= 0 || spec.io.afterCpu <= 0 || spec.io.afterCpu >= spec.cpuBurst)
+        if (spec.io.device.find_first_not_of(" \t\r\n") == std::string::npos || spec.io.duration <= 0 || spec.io.afterCpu <= 0 || spec.io.afterCpu >= spec.cpuBurst)
             throw std::invalid_argument("I/O needs a device, positive duration, and an offset before CPU completion.");
     }
     Process process;
@@ -118,7 +118,7 @@ void IoManager::startNext(Device& device, int now)
 
 void IoManager::request(const std::string& deviceName, int processId, int now, int duration)
 {
-    if (deviceName.empty() || processId <= 0 || now < 0 || duration <= 0 ||
+    if (deviceName.find_first_not_of(" \t\r\n") == std::string::npos || processId <= 0 || now < 0 || duration <= 0 ||
         duration > std::numeric_limits<int>::max() - now)
         throw std::invalid_argument("Invalid simulated I/O request.");
     for (const auto& entry : devices_) {
