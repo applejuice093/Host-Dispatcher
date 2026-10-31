@@ -153,6 +153,16 @@ try {
     check(devices.completeDue(2).size() == 1 && devices.completeDue(4).empty() && devices.completeDue(5).size() == 1,
           "device serves queued requests serially for their configured durations");
 
+    IoManager handoff;
+    handoff.request("Disk", 1, 0, 5); handoff.request("Disk", 2, 0, 2);
+    handoff.remove(1, 1);
+    check(handoff.describe().find("P2 active") != std::string::npos, "removing the active request starts the next queued one");
+    check(handoff.completeDue(2).empty() && handoff.completeDue(3).size() == 1,
+          "promoted request is timed from the moment it starts");
+    bool badIo = false;
+    try { handoff.request("Disk", 3, 0, 0); } catch (const std::invalid_argument&) { badIo = true; }
+    check(badIo, "zero-length I/O request rejected");
+
     Simulation metrics;
     metrics.addProcess(task(1, ProcessType::User, 2));
     metrics.run(3);
