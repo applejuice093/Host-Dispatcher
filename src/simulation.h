@@ -50,6 +50,7 @@ struct Process {
     bool ioIssued = false;
     bool deadlineMissed = false;
     bool ioCompletedWhileSuspended = false;
+    bool admissionWaitLogged = false; // true once the "waiting for memory" event was recorded
 
     int absoluteDeadline() const;
 };

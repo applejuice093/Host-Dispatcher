@@ -152,6 +152,16 @@ try {
     check(admission.memory().used() == 10 && admission.processes().at(2).state != ProcessState::New,
           "admission retries when completed work releases memory");
 
+    Simulation crowded(10);
+    ProcessSpec holder = task(1, ProcessType::User, 5); holder.memoryMb = 10; crowded.addProcess(holder);
+    ProcessSpec waiterA = task(2, ProcessType::User, 1); crowded.addProcess(waiterA);
+    ProcessSpec waiterB = task(3, ProcessType::User, 1); crowded.addProcess(waiterB);
+    crowded.run(4);
+    int admissionMessages = 0;
+    for (const auto& message : crowded.messages())
+        if (message.find("admission waiting") != std::string::npos) ++admissionMessages;
+    check(admissionMessages == 2, "each waiting process logs its admission wait once, even when several wait");
+
     Simulation cleanup;
     ProcessSpec blocked = task(1, ProcessType::User, 4);
     blocked.hasIo = true; blocked.io = IoRequest{"Disk", 1, 10}; cleanup.addProcess(blocked);

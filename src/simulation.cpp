@@ -321,8 +321,12 @@ void Simulation::admitArrivals()
         auto& process = processes_.at(entry.first);
         if (process.state != ProcessState::New || process.spec.arrival > time_) continue;
         if (!memory_.allocate(process.spec.id, process.spec.memoryMb)) {
-            const std::string message = "P" + std::to_string(process.spec.id) + " admission waiting: insufficient simulated memory.";
-            if (messages_.empty() || messages_.back() != message) messages_.push_back(message);
+            // Log once per process; comparing with only the last message spammed the
+            // event log every tick whenever two or more processes were waiting.
+            if (!process.admissionWaitLogged) {
+                messages_.push_back("P" + std::to_string(process.spec.id) + " admission waiting: insufficient simulated memory.");
+                process.admissionWaitLogged = true;
+            }
             continue;
         }
         transition(process, ProcessState::Ready);
