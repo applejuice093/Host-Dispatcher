@@ -37,13 +37,33 @@ cmake -P scripts/run.cmake
 
 The script works with single- and multi-configuration CMake generators. On Windows it requires Qt's `windeployqt` deployment tool. If Qt is installed in a nonstandard location, set `CMAKE_PREFIX_PATH` to its Qt installation before running the command.
 
+### Build and test manually
+
 ```sh
 cmake -S . -B build
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
+### Run only the engine tests (no Qt needed)
+
+The scheduling engine is plain C++17, so you can check it on any machine with CMake and a compiler:
+
+```sh
+cmake --preset core
+cmake --build --preset core
+ctest --preset core
+```
+
+This builds into `build-core/` with the GUI turned off and compiler warnings on (`-DHOST_DISPATCHER_WARNINGS=OFF` turns them off).
+
 If the GUI is skipped, set `CMAKE_PREFIX_PATH` to a Qt 6 installation compatible with your compiler and reconfigure. You can disable the GUI explicitly with `-DHOST_DISPATCHER_BUILD_GUI=OFF`.
+
+### Troubleshooting
+
+- **"Qt 6 Widgets was not found"**: CMake could not see Qt. Point it at your Qt kit, for example `cmake -S . -B build -DCMAKE_PREFIX_PATH=C:/Qt/6.8.3/mingw_64`, and make sure the kit matches your compiler (MinGW Qt with MinGW, MSVC Qt with MSVC).
+- **The Windows app closes immediately or reports missing DLLs**: run it from a folder where `windeployqt` has copied the Qt runtime, which `cmake -P scripts/run.cmake` does for you.
+- **A process stays in New forever**: check the event log. Either memory is still held by other processes, or the process asks for more memory than the whole simulated capacity, which the log reports as "can never be admitted".
 
 ## Dependencies and licensing
 
