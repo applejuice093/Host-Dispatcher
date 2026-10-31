@@ -163,6 +163,23 @@ try {
     try { handoff.request("Disk", 3, 0, 0); } catch (const std::invalid_argument&) { badIo = true; }
     check(badIo, "zero-length I/O request rejected");
 
+    Simulation earlyArrival;
+    earlyArrival.addProcess(task(2, ProcessType::RealTime, 2, 0, 6));
+    earlyArrival.addProcess(task(1, ProcessType::RealTime, 1, 1, 5));
+    earlyArrival.run(3);
+    check(earlyArrival.timeline()[1].processId == 2 && earlyArrival.timeline()[2].processId == 1,
+          "EDF deadline ties prefer the earlier arrival before the lower ID");
+
+    Simulation guards;
+    bool negativeRun = false;
+    try { guards.run(-1); } catch (const std::invalid_argument&) { negativeRun = true; }
+    check(negativeRun && guards.time() == 0, "negative tick counts are rejected");
+    guards.addProcess(task(1, ProcessType::User, 3, 5));
+    check(guards.terminate(1) && !guards.terminate(1), "a not-yet-arrived task can be terminated exactly once");
+    guards.run(6);
+    check(guards.timeline().back().processId == 0 && guards.metrics().completed == 0,
+          "terminated tasks are never admitted or counted as completed");
+
     Simulation metrics;
     metrics.addProcess(task(1, ProcessType::User, 2));
     metrics.run(3);
