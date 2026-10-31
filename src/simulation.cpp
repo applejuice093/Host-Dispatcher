@@ -430,8 +430,8 @@ void Simulation::step()
         transition(process, ProcessState::Blocked);
         io_.request(process.spec.io.device, selected, time_, process.spec.io.duration);
         current_ = 0;
-    } else if (process.spec.type == ProcessType::User && process.queueLevel < 2 &&
-               process.quantumUsed >= (process.queueLevel == 0 ? 2 : 4)) {
+    } else if (process.spec.type == ProcessType::User && process.queueLevel < kMlfqLowestLevel &&
+               process.quantumUsed >= (process.queueLevel == 0 ? kMlfqQuantumQ0 : kMlfqQuantumQ1)) {
         ++process.queueLevel;
         process.quantumUsed = 0;
         process.queueWaitTicks = 0;

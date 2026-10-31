@@ -10,6 +10,12 @@
 
 namespace host_dispatcher {
 
+// MLFQ time quanta for Q0 and Q1, in simulated ticks. Q2 is FCFS and is never demoted further.
+constexpr int kMlfqQuantumQ0 = 2;
+constexpr int kMlfqQuantumQ1 = 4;
+constexpr int kMlfqLowestLevel = 2;
+constexpr int kDefaultPriorityBoostInterval = 20;
+
 enum class ProcessType { User, RealTime };
 enum class ProcessState {
     New, Ready, Running, Blocked, SuspendedReady, SuspendedBlocked, Terminated
@@ -168,7 +174,7 @@ private:
     IoManager io_;
     int time_ = 0;
     int current_ = 0;
-    int priorityBoostInterval_ = 20;
+    int priorityBoostInterval_ = kDefaultPriorityBoostInterval;
     RealTimeScheduler realTimeScheduler_;
     MLFQScheduler mlfqScheduler_;
     HostDispatcher dispatcher_;
