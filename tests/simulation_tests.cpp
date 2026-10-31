@@ -115,6 +115,25 @@ try {
         for (int id : queue) if (id == 2) ++duplicateBoostEntryCount;
     check(duplicateBoostEntryCount <= 1, "priority boost preserves unique ready queue membership");
 
+    Simulation running;
+    running.addProcess(task(1, ProcessType::User, 5));
+    running.step();
+    check(running.processes().at(1).state == ProcessState::Running, "dispatched task is running");
+    check(running.suspend(1) && running.processes().at(1).state == ProcessState::SuspendedReady,
+          "running task can be suspended");
+    running.step();
+    check(running.timeline().back().processId == 0, "suspended task receives no CPU time");
+    check(!running.suspend(1) && !running.resume(99), "invalid suspend and unknown resume are refused");
+    check(running.resume(1) && running.processes().at(1).state == ProcessState::Ready, "suspended task resumes ready");
+    running.step();
+    check(running.timeline().back().processId == 1, "resumed task is dispatched again");
+
+    Simulation fcfs;
+    fcfs.addProcess(task(1, ProcessType::User, 20));
+    fcfs.setPriorityBoostInterval(0);
+    fcfs.run(14);
+    check(fcfs.processes().at(1).queueLevel == 2, "Q2 is the lowest level and never demotes further");
+
     Simulation io;
     ProcessSpec withIo = task(1, ProcessType::User, 4);
     withIo.hasIo = true; withIo.io = IoRequest{"Disk", 1, 2}; io.addProcess(withIo);
