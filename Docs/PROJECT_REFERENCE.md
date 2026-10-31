@@ -143,7 +143,7 @@ The fixed queues are:
 | Q1 | Round Robin | 4 ticks |
 | Q2 | FCFS | No demotion quantum |
 
-A full Q0/Q1 quantum demotes the process one level. A single I/O yield preserves its level and resets quantum use. A higher queue can preempt lower-queue User work. At Q2, work continues FCFS unless preempted by Real-Time work. Ready User tasks in Q1/Q2 are boosted to Q0 after 20 ready-wait ticks by default. `setPriorityBoostInterval(0)` disables boosts; another nonnegative value changes the interval.
+A full Q0/Q1 quantum demotes the process one level. A single I/O yield preserves its level and resets quantum use. A higher queue can preempt lower-queue User work. At Q2, work continues FCFS unless preempted by Real-Time work. Ready User tasks in Q1/Q2 are boosted to Q0 after 20 ready-wait ticks by default. The quanta and the default interval are the named constants `kMlfqQuantumQ0`, `kMlfqQuantumQ1`, and `kDefaultPriorityBoostInterval` in `simulation.h`. `setPriorityBoostInterval(0)` disables boosts; another nonnegative value changes the interval.
 
 Queue insertion removes any existing entries for the same process first, avoiding duplicate scheduling. Blocked and suspended tasks are not queued as Ready work.
 
@@ -259,6 +259,7 @@ Nested `IoManager::Request` stores process ID, due time, and duration. Internal 
 | `loadSample()` | Resets the current engine, then adds the four built-in sample processes. |
 | `setMemoryCapacity(int)` | Changes capacity only before processes exist and before time advances; otherwise throws `std::logic_error`. Capacity itself must be positive. |
 | `setPriorityBoostInterval(int)` | Sets a nonnegative Ready-wait interval; zero disables boosts, negative values throw `std::invalid_argument`. |
+| `priorityBoostInterval()` | Returns the current boost interval in ticks (0 means disabled); the dashboard summary reads it. |
 | `step()` | Runs one deterministic tick, performs admission, I/O, dispatch, CPU accounting, resource changes, queue aging, and deadline checks. |
 | `run(int ticks)` | Calls `step()` the requested number of times; negative counts throw `std::invalid_argument`. |
 | `suspend(int id)` | Suspends Ready, Running, or Blocked work and removes it from MLFQ queues; returns false for missing IDs or unsupported states. Memory and I/O are retained. |
