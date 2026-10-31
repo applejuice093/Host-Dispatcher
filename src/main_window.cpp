@@ -229,7 +229,11 @@ void MainWindow::refresh()
     }
     updateActionAvailability();
     const Metrics m = simulation_.metrics();
-    summaryLabel_->setText(QStringLiteral("Simulated dispatcher | Real-time EDF preempts user work; user tasks use MLFQ (Q0 RR 2, Q1 RR 4, Q2 FCFS), with 20-tick waiting boosts.")
+    const int boost = simulation_.priorityBoostInterval();
+    const QString boostText = boost > 0 ? QStringLiteral("with %1-tick waiting boosts").arg(boost)
+                                        : QStringLiteral("with priority boosts disabled");
+    summaryLabel_->setText(QStringLiteral("Simulated dispatcher | Real-time EDF preempts user work; user tasks use MLFQ (Q0 RR %1, Q1 RR %2, Q2 FCFS), %3.")
+        .arg(kMlfqQuantumQ0).arg(kMlfqQuantumQ1).arg(boostText)
         + QStringLiteral("  |  Processes: %1  |  Completed: %2").arg(static_cast<qulonglong>(all.size())).arg(m.completed));
     const auto queues = simulation_.readyQueues();
     QString queueText = QStringLiteral("MLFQ ready queues\n");

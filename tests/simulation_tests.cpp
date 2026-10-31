@@ -95,6 +95,12 @@ try {
     q1.run(6);
     check(q1.processes().at(1).queueLevel == 2, "Q1 full quantum demotes to Q2");
 
+    Simulation defaults;
+    check(defaults.priorityBoostInterval() == kDefaultPriorityBoostInterval, "default priority boost interval is exposed");
+    bool negativeBoost = false;
+    try { defaults.setPriorityBoostInterval(-1); } catch (const std::invalid_argument&) { negativeBoost = true; }
+    check(negativeBoost && defaults.priorityBoostInterval() == kDefaultPriorityBoostInterval, "negative boost interval rejected without changing it");
+
     Simulation boosting;
     boosting.setPriorityBoostInterval(1);
     boosting.addProcess(task(1, ProcessType::User, 30));

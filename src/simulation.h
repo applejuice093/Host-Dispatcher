@@ -166,6 +166,7 @@ public:
     const std::vector<std::string>& messages() const { return messages_; }
     int time() const { return time_; }
     void setPriorityBoostInterval(int ticks);
+    int priorityBoostInterval() const { return priorityBoostInterval_; }
     Metrics metrics() const;
     std::array<std::vector<int>, 3> readyQueues() const;
 private:
